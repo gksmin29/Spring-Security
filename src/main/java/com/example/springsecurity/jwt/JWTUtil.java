@@ -33,7 +33,7 @@ public class JWTUtil {
 
     public Boolean isExpired(String token) {
         return Jwts.parser().verifyWith(secretKey).build().
-                parseEncryptedClaims(token).getPayload().getExpiration().before(new Date());
+                parseSignedClaims(token).getPayload().getExpiration().before(new Date());
     }
 
     // 로그인이 성공했을 때, successfulHandler를 통해 token을 생성해서 응답해주는 메서드

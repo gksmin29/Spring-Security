@@ -1,5 +1,6 @@
 package com.example.springsecurity.config;
 
+import com.example.springsecurity.jwt.JWTFilter;
 import com.example.springsecurity.jwt.JWTUtil;
 import com.example.springsecurity.jwt.LoginFilter;
 import org.springframework.context.annotation.Bean;
@@ -67,10 +68,15 @@ public class SecurityConfig {
                         // 그 외의 요청에 대해서는 로그인한 요청에 대해서만 허용
                         .anyRequest().authenticated());
 
+        // LoginFilter 추가
         http
                 // At = 해당 자리에 등록. Before, After도 있음
                 .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil),
                         UsernamePasswordAuthenticationFilter.class);
+
+        // JWTFilter 추가
+        http
+                .addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
 
         // 세션 설정
         // jwt 방식에서는 세션은 stateless 방식으로 관리
