@@ -1,5 +1,6 @@
 package com.example.springsecurity.config;
 
+import com.example.springsecurity.jwt.JWTUtil;
 import com.example.springsecurity.jwt.LoginFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,9 +20,11 @@ public class SecurityConfig {
 
     // AuthenticationManager가 인자로 받을 AuthenticationConfiguration을 주입
     private final AuthenticationConfiguration authenticationConfiguration;
+    private final JWTUtil jwtUtil;
 
-    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration) {
+    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration, JWTUtil jwtUtil) {
         this.authenticationConfiguration = authenticationConfiguration;
+        this.jwtUtil = jwtUtil;
     }
 
     // 패스워드를 암호화할 수 있게 해주는 설정
@@ -66,7 +69,7 @@ public class SecurityConfig {
 
         http
                 // At = 해당 자리에 등록. Before, After도 있음
-                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration)),
+                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil),
                         UsernamePasswordAuthenticationFilter.class);
 
         // 세션 설정
